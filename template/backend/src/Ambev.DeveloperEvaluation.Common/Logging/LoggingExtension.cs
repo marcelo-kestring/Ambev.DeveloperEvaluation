@@ -50,9 +50,12 @@ public static class LoggingExtension
     /// <remarks>
     /// <para>Logging output are diferents on Debug and Release modes.</para>
     /// </remarks> 
-    public static WebApplicationBuilder AddDefaultLogging(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder AddDefaultLogging(this WebApplicationBuilder builder, string databaseUrl)
     {
-        Log.Logger = new LoggerConfiguration().CreateLogger();
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console()
+            .WriteTo.MongoDB(databaseUrl, collectionName: "AppLogs")
+            .CreateLogger();
         builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
         {
             loggerConfiguration
